@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,7 +27,7 @@ import javax.swing.JTextArea;
  * 3) Count the number of lines
  *
  * 4) List all the words in alphabetical order
- * 
+ *
  * 5) Write the count for each word, e.g. "word word pippo" should output "pippo -> 1 word -> 2"
  *
  */
@@ -38,7 +39,27 @@ public final class LambdaFilter extends JFrame {
         /**
          * Commands.
          */
-        IDENTITY("No modifications", Function.identity());
+        IDENTITY("No modifications", Function.identity()),
+        LOWERCASE("Convert to lowercase", str -> {
+            return str.toLowerCase();
+        }),
+        CHAR_COUNT("Count the number of chars", str -> {
+            return String.valueOf(str.length());
+        }),
+        LINE_COUNT("Count the number of lines", str -> {
+            //return String.valueOf(str.split(System.lineSeparator()).length);
+            return String.valueOf(str.lines().count());
+        }),
+        LIST_IN_ORDER("List all the words in alphabetical order", str -> {
+            return Stream.of(str.split(System.lineSeparator()))
+                .sorted()
+                .toString();
+        }),
+        COUNT_WORDS("Write the count for each word", str -> {
+            return Stream.of(str.split(System.lineSeparator()))
+                .sorted();//TODO
+        });
+
 
         private final String commandName;
         private final Function<String, String> fun;
